@@ -1,12 +1,10 @@
-from airflow.hooks.postgres_hook import PostgresHook
+from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.models import BaseOperator
-from airflow.utils.decorators import apply_defaults
 
 
 class LoadAnalyticsOperator(BaseOperator):
     ui_color = '#80BD9E'
 
-    @apply_defaults
     def __init__(self,
                  redshift_conn_id="",
                  sql_query=[],

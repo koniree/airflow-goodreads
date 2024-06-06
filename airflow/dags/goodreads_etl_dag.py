@@ -1,17 +1,16 @@
 from datetime import datetime, timedelta
-import os
+import os, sys
 from airflow import DAG
-from airflow.contrib.hooks.ssh_hook import SSHHook
-from airflow.contrib.operators.ssh_operator import SSHOperator
-from airflow.operators.dummy_operator import DummyOperator
-from airflow.hooks.postgres_hook import PostgresHook
-from airflow.operators.goodreads_plugin import DataQualityOperator
-from airflow.operators.goodreads_plugin import LoadAnalyticsOperator
-from helpers import AnalyticsQueries
-
+from airflow.providers.ssh.hooks.ssh import SSHHook
+from airflow.providers.ssh.operators.ssh import SSHOperator
+from airflow.operators.empty import EmptyOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+from plugins.operators.data_quality import DataQualityOperator
+from plugins.operators.goodreads_analytics import LoadAnalyticsOperator
+from plugins.helpers.analytics_queries import AnalyticsQueries
+#from goodreadsfaker import GoodreadsFake
 #config = configparser.ConfigParser()
 #config.read_file(open(f"{Path(__file__).parents[0]}/emr_config.cfg"))
-
 
 default_args = {
     'owner': 'goodreads',
@@ -36,9 +35,10 @@ dag = DAG(dag_name,
           max_active_runs = 1
         )
 
-start_operator = DummyOperator(task_id='Begin_execution',  dag=dag)
+start_operator = EmptyOperator(task_id='Begin_execution',  dag=dag)
 
 emrsshHook= SSHHook(ssh_conn_id='emr_ssh_connection')
+
 
 jobOperator = SSHOperator(
     task_id="GoodReadsETLJob",
@@ -144,7 +144,7 @@ books_data_quality_checks = DataQualityOperator(
 )
 
 
-end_operator = DummyOperator(task_id='Stop_execution',  dag=dag)
+end_operator = EmptyOperator(task_id='Stop_execution',  dag=dag)
 
 start_operator >> jobOperator >> warehouse_data_quality_checks >> create_analytics_schema
 create_analytics_schema >> [create_author_analytics_table, create_book_analytics_table]
