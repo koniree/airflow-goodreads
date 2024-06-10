@@ -8,3 +8,5 @@ src/warehouse/warehouse_config.cfg
 
 #Ignore Cache Files
 src/warehouse/__pycache__/
+
+airflow_env/*
