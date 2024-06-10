@@ -1,6 +1,7 @@
 #Ignore Config Files
 src/config.cfg
 src/warehouse/warehouse_config.cfg
+*.log
 
 #Ignore Idea Files
 .idea/

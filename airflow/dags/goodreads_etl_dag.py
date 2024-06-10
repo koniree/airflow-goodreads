@@ -8,9 +8,9 @@ from airflow.providers.postgres.hooks.postgres import PostgresHook
 from plugins.operators.data_quality import DataQualityOperator
 from plugins.operators.goodreads_analytics import LoadAnalyticsOperator
 from plugins.helpers.analytics_queries import AnalyticsQueries
-#from goodreadsfaker import GoodreadsFake
-#config = configparser.ConfigParser()
-#config.read_file(open(f"{Path(__file__).parents[0]}/emr_config.cfg"))
+from goodreadsfaker import GoodreadsFake
+config = configparser.ConfigParser()
+config.read_file(open(f"{Path(__file__).parents[0]}/emr_config.cfg"))
 
 default_args = {
     'owner': 'goodreads',
@@ -19,8 +19,8 @@ default_args = {
     'end_date' : datetime(2020, 2, 20, 0, 0, 0, 0),
     'email_on_failure': False,
     'email_on_retry': False,
-    #'retries': 1,
-    #'retry_delay': timedelta(minutes=15),
+    'retries': 1,
+    'retry_delay': timedelta(minutes=15),
     'catchup': True
 }
 
@@ -48,19 +48,19 @@ jobOperator = SSHOperator(
 
 
 warehouse_data_quality_checks = DataQualityOperator(
-    task_id='Warehouse_data_quality_checks',
-    dag=dag,
-    redshift_conn_id = "redshift",
-    tables = ["goodreads_warehouse.authors", "goodreads_warehouse.reviews", "goodreads_warehouse.books", "goodreads_warehouse.users"]
+   task_id='Warehouse_data_quality_checks',
+   dag=dag,
+   redshift_conn_id = "redshift",
+   tables = ["goodreads_warehouse.authors", "goodreads_warehouse.reviews", "goodreads_warehouse.books", "goodreads_warehouse.users"]
 
 )
 
 
 create_analytics_schema = LoadAnalyticsOperator(
-    task_id='Create_analytics_schema',
-    redshift_conn_id = 'redshift',
-    sql_query = [AnalyticsQueries.create_schema],
-    dag=dag
+   task_id='Create_analytics_schema',
+   redshift_conn_id = 'redshift',
+   sql_query = [AnalyticsQueries.create_schema],
+   dag=dag
 )
 
 create_author_analytics_table = LoadAnalyticsOperator(
