@@ -22,7 +22,7 @@ class GoodreadsFake:
         self._review_data_list = list()
         self._author_data_list = list()
         self._book_data_list = list()
-        _base_directory = ".\GoodReadsData\\fake"
+        _base_directory = "GoodReadsDatafake"
         if not os.path.exists(_base_directory):
             os.makedirs(_base_directory)
         self._base_directory = _base_directory

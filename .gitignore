@@ -10,3 +10,4 @@ src/warehouse/warehouse_config.cfg
 src/warehouse/__pycache__/
 
 airflow_env/*
+src/dwh.cfg

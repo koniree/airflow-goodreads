@@ -18,7 +18,7 @@ COPY requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
 # Copy the custom goodreadsfaker module
-COPY goodreadsfaker /opt/airflow/goodreadsfaker
+COPY dags/goodreadsfaker /opt/airflow/dags/goodreadsfaker
 
 # Set the PYTHONPATH environment variable to include your custom module
 ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/dags/goodreadsfaker"
