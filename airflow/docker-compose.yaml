@@ -44,6 +44,7 @@
 #
 # Feel free to modify this file to suit your needs.
 ---
+version: '3'
 x-airflow-common:
   &airflow-common
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
@@ -54,8 +55,8 @@ x-airflow-common:
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflowdummy:XDairflowXDlol@postgres/goodreads
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflowdummy:XDairflowXDlol@postgres/goodreads
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
@@ -90,12 +91,11 @@ services:
   postgres:
     image: postgres:13
     environment:
-      POSTGRES_USER: airflowdummy
-      POSTGRES_PASSWORD: XDairflowXDlol
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
       POSTGRES_DB: goodreads
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
-      #- opt/dags/GoodReadsData//fake
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s 
@@ -194,6 +194,7 @@ services:
     command:
       - -c
       - |
+
         if [[ -z "${AIRFLOW_UID}" ]]; then
           echo
           echo -e "\033[1;33mWARNING!!!: AIRFLOW_UID not set!\e[0m"
@@ -289,4 +290,5 @@ services:
 
 volumes:
   postgres-db-volume:
-    driver: local
+    
+  
